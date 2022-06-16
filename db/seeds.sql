@@ -1,6 +1,11 @@
 INSERT INTO departments (dept_name) 
 VALUES ("Customer Service"),
-("General Practice");
+INSERT INTO departments (dept_name)
+VALUES ("General Practice"),
+INSERT INTO departments (dept_name)
+VALUES ("Emergency"),
+INSERT INTO departments (dept_name)
+VALUES ("Urgent Care")
 
 INSERT INTO roles (title, salary, dept_id) 
 VALUES ("Veterinarian", 120000, 2),
