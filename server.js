@@ -1,7 +1,6 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 
-
 var db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -14,12 +13,6 @@ db.connect((err) => {
   console.log("Database connected.");
   startPrompt();
 });
-
-  // console.log("Connected!");
-  // addEmployee();
-  // addRole();
-  // addDepartment();
-  // updateRole();
 
 startPrompt = () => {
   inquirer.prompt([
@@ -227,15 +220,27 @@ const updateRole = () => {
 
 //TODO: Insert table to view all employees
 function viewAllEmployees() {
-  db.query("SELECT * from employee", (err, res) => 
+  db.query("SELECT * from employee", (err, res) => {
   if (err) throw err
-  console.table
-  )
+  console.table();
+  startPrompt(); 
+})
 }
 
 //TODO: Insert table to view all roles
 function viewAllRoles() {
-
+  db.query("SELECT * from roles", (err, res) => {
+    if (err) throw err;
+    console.table();
+    startPrompt();
+  });
 }
 
 //TODO: Insert table to view all departments
+function viewAllDepartments() {
+  db.query("SELECT * from departments", (err, res) => {
+    if (err) throw err;
+    console.table();
+    startPrompt();
+  });
+}
