@@ -1,8 +1,72 @@
-const inquirer = require("inquirer");
 const mysql = require("mysql2");
-const fs = require("fs");
-const util = require("util");
-const consTable = require("console.table");
+const inquirer = require("inquirer");
+
+
+var db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "wrenpassword",
+  database: 'db'
+});
+
+db.connect((err) => {
+  if (err) throw err;
+  console.log("Database connected.");
+  startPrompt();
+});
+
+  // console.log("Connected!");
+  // addEmployee();
+  // addRole();
+  // addDepartment();
+  // updateRole();
+
+startPrompt = () => {
+  inquirer.prompt([
+  {
+    type: "list",
+    message: "Select an option.",
+    name: "choice",
+    choices: [
+      "View all departments?",
+      "View all roles?",
+      "View all employees?",
+      "Add a department?",
+      "Add a role?",
+      "Add an employee?",
+      "Update an employee's role?"
+    ]
+  }
+  ])
+  .then((answer) => {
+      console.log(answer);
+      let userChoice = answer.choice;
+      console.log(userChoice);
+      switch(userChoice) {
+        case "View all departments?":
+          viewAllDepartments();
+          break;
+        case "View all roles?":
+          viewAllRoles();
+          break;
+        case "View all employees?":
+          viewAllEmployees();
+          break;
+        case "Add a department?":
+        addDepartment();
+        break;
+        case "Add a role?":
+          addRole();
+          break;
+        case "Add an employee?":
+        addEmployee();
+        break;
+        case "Update an employee's role?":
+          updateRole();
+          break;
+      }
+    });
+}
 
 //Add employee: first name - last name - employee role (select from list?) - employee's manager
 const addEmployee = () => {
@@ -162,7 +226,16 @@ const updateRole = () => {
 };
 
 //TODO: Insert table to view all employees
+function viewAllEmployees() {
+  db.query("SELECT * from employee", (err, res) => 
+  if (err) throw err
+  console.table
+  )
+}
 
 //TODO: Insert table to view all roles
+function viewAllRoles() {
+
+}
 
 //TODO: Insert table to view all departments
