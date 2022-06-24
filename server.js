@@ -1,11 +1,12 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
+const consTable = require("console.table");
 
 var db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "wrenpassword",
-  database: 'db'
+  database: 'employees'
 });
 
 db.connect((err) => {
@@ -99,23 +100,13 @@ return inquirer.prompt([
     type: "checkbox",
     name: "role",
     message: "What is the employee's role?",
-    choices: ["Veterinarian", "Veterinary Technician", "Veterinary Assistant", "Practice Manager", "Hospital Manager", "Medical Director" ],
-      //Validate values throughout the prompted questions
-    validate: (nameInput) => {
-        if (nameInput) {
-        return true;
-        } else {
-        return false;
-        }
-    },
-    },
-
-    //Employee's manager
-    {
-    type: "checkbox",
-    name: "role",
-    message: "Who is the employee's manager?",
-    choices: [],
+    choices: [
+      "Veterinarian", 
+      "Veterinary Technician", 
+      "Veterinary Assistant", 
+      "Practice Manager", 
+      "Hospital Manager", 
+      "Medical Director" ],
       //Validate values throughout the prompted questions
     validate: (nameInput) => {
         if (nameInput) {
@@ -167,7 +158,11 @@ return inquirer.prompt([
     type: "checkbox",
     name: "role",
     message: "What department does the role belong to?",
-    choices: [],
+    choices: [
+      "Customer Service",
+      "General Practice",
+      "Emergency"
+    ],
       //Validate values throughout the prompted questions
     validate: (nameInput) => {
         if (nameInput) {
@@ -206,7 +201,15 @@ const updateRole = () => {
     type: "checkbox",
     name: "newRole",
     message: "What is the employee's new role?",
-    choices: [],
+    choices: [
+      "Veterinarian",
+      "Veterinary Technician",
+      "Veterinary Assistant",
+      "Receptionist",
+      "Practice Manager",
+      "Hospital Manager",
+      "Medical Director"
+    ],
     validate: (nameInput) => {
         if (nameInput) {
         return true;
@@ -218,29 +221,36 @@ const updateRole = () => {
     ]);
 };
 
-//TODO: Insert table to view all employees
-function viewAllEmployees() {
-  db.query("SELECT * from employee", (err, res) => {
-  if (err) throw err
-  console.table();
-  startPrompt(); 
-})
-}
 
-//TODO: Insert table to view all roles
-function viewAllRoles() {
-  db.query("SELECT * from roles", (err, res) => {
+function viewAllEmployees() {
+  db.query("SELECT * FROM employee", (err, res) => {
     if (err) throw err;
-    console.table();
+    console.clear();
+    console.log("Employees");
+    const table = consTable.getTable(res);
+    console.log(table);
     startPrompt();
   });
 }
 
-//TODO: Insert table to view all departments
-function viewAllDepartments() {
-  db.query("SELECT * from departments", (err, res) => {
+function viewAllRoles() {
+  db.query("SELECT * FROM roles", (err, res) => {
     if (err) throw err;
-    console.table();
+    console.clear();
+    console.log("Roles");
+    const table = consTable.getTable(res);
+    console.log(table);
+    startPrompt();
+  });
+}
+
+function viewAllDepartments() {
+  db.query("SELECT * FROM departments", (err, res) => {
+    if (err) throw err;
+    console.clear();
+    console.log("Departments");
+    const table = consTable.getTable(res);
+    console.log(table);
     startPrompt();
   });
 }
