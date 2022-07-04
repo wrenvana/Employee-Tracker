@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
-const consTable = require("console.table");
+// const consTable = require("console.table");
 
 var db = mysql.createConnection({
   host: "localhost",
@@ -116,7 +116,8 @@ return inquirer.prompt([
         }
     },
     },
-]);
+  ]
+);
 };
 
 
@@ -218,39 +219,30 @@ const updateRole = () => {
         }
     },
     },
-    ]);
+    ]);  
 };
 
 
 function viewAllEmployees() {
-  db.query("SELECT * FROM employee", (err, res) => {
+  db.query("SELECT * FROM employee;", (err, res) => {
     if (err) throw err;
-    console.clear();
-    console.log("Employees");
-    const table = consTable.getTable(res);
-    console.log(table);
+    console.table(res);
     startPrompt();
   });
 }
 
 function viewAllRoles() {
-  db.query("SELECT * FROM roles", (err, res) => {
+  db.query("SELECT * FROM roles;", (err, res) => {
     if (err) throw err;
-    console.clear();
-    console.log("Roles");
-    const table = consTable.getTable(res);
-    console.log(table);
+    console.table(res);
     startPrompt();
   });
 }
 
 function viewAllDepartments() {
-  db.query("SELECT * FROM departments", (err, res) => {
+  db.query("SELECT * FROM departments;", (err, res) => {
     if (err) throw err;
-    console.clear();
-    console.log("Departments");
-    const table = consTable.getTable(res);
-    console.log(table);
+    console.table(res);
     startPrompt();
   });
 }
