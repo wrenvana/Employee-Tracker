@@ -65,20 +65,12 @@ startPrompt = () => {
 
 //Add employee: first name - last name - employee role (select from list?) - employee's manager
 const addEmployee = () => {
-  return inquirer.prompt([
+  inquirer.prompt([
     //First name
     {
       type: "input",
       name: "firstName",
       message: "What is the employee's first name?",
-      //Validate values throughout the prompted questions
-      validate: (nameInput) => {
-        if (nameInput) {
-          return true;
-        } else {
-          return false;
-        }
-      },
     },
 
     //Last name
@@ -86,40 +78,38 @@ const addEmployee = () => {
       type: "input",
       name: "lastName",
       message: "What is the employee's last name?",
-      //Validate values throughout the prompted questions
-      validate: (nameInput) => {
-        if (nameInput) {
-          return true;
-        } else {
-          return false;
-        }
-      },
     },
 
     //Employee role
     {
-      type: "checkbox",
+      type: "input",
       name: "role",
-      message: "What is the employee's role?",
-      choices: [
-        "Veterinarian",
-        "Veterinary Technician",
-        "Veterinary Assistant",
-        "Practice Manager",
-        "Hospital Manager",
-        "Medical Director",
-      ],
-      //Validate values throughout the prompted questions
-      validate: (nameInput) => {
-        if (nameInput) {
-          return true;
-        } else {
-          return false;
-        }
-      },
+      message: "What is the employee's ID?",
     },
-  ]);
-};
+    //Manager ID
+    {
+      type: "input",
+      name: "managerID",
+      message: "What is the employee's manager's ID?",
+    },
+  ])
+      .then((res) => {
+        db.query(
+          "INSERT INTO employee SET ?", 
+          {
+            first_name: res.firstName,
+            last_name: res.lastName,
+            role_id: res.role,
+            manager_id: res.managerID,
+          },
+        (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          startPrompt();
+        }
+      );
+    });
+}
 
 //Add role: name of role - salary of role - department role belongs to
 const addRole = () => {
@@ -173,7 +163,7 @@ const addRole = () => {
       db.query(
         "INSERT INTO roles SET ?",
         {
-          title: res.roleTitle,
+          title: res.title,
           salary: res.salary,
           dept_id: res.dept_id,
         },
@@ -214,30 +204,50 @@ const addDepartment = () => {
     
 //Update employee role: which employee - select new role
 const updateRole = () => {
-  return inquirer.prompt([
-    {
-      type: "checkbox",
-      name: "newRole",
-      message: "What is the employee's new role?",
-      choices: [
-        "Veterinarian",
-        "Veterinary Technician",
-        "Veterinary Assistant",
-        "Receptionist",
-        "Practice Manager",
-        "Hospital Manager",
-        "Medical Director",
-      ],
-      validate: (nameInput) => {
-        if (nameInput) {
-          return true;
-        } else {
-          return false;
-        }
+  db.query("SELECT * FROM employee ORDER BY first_name", (err, res) => {
+    let employee = res.map((employee) => {
+      return {
+        name: employee.first_name + " " + employee.last_name,
+        value: employee.id,
+      };
+    });
+    db.query("SELECT * FROM roles ORDER BY title", (err, res) => {
+      let roles = res.map((role) => {
+        return {
+          name: role.title,
+          value: role.id,
+        };
+      });
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "updateEmployee",
+        message: " Please enter employees name.",
+        choices: employee,
       },
-    },
-  ]);
-};
+      {
+        type: "list",
+        name: "newRole",
+        message: "What is the employee's new role?",
+        choices: roles,
+      },
+    ])
+    .then((res) => {
+      db.query(
+        "UPDATE employee SET role_id = ? WHERE id = ?",
+        [res.newRole, res.updateEmployee],
+        function (err) {
+          if (err) throw err;
+          console.table(res);
+          startPrompt();
+        }
+      );
+    });
+    });
+  });
+}
+
 
 function viewAllEmployees() {
   db.query("SELECT * FROM employee;", (err, res) => {

@@ -21,7 +21,7 @@ Install Node.js if you do not already have it installed. Download the repository
 ## Usage
 Type "node server.js" into your command line program once you have navigated to the program's directory. Answer the prompts to display and update your tables.
 
-(TODO: Add video here.)
+[Demo Video](EmployeeTrackerDemo.webm)
 
 ----------------------------------------------------------------
 ## Contributors
